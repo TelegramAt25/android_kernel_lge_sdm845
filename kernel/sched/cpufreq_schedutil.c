@@ -14,7 +14,6 @@
 #include <linux/cpufreq.h>
 #include <linux/kthread.h>
 #include <linux/slab.h>
-#include <trace/events/power.h>
 #include <linux/sched/sysctl.h>
 #include "sched.h"
 #include "tune.h"
@@ -157,7 +156,6 @@ static void sugov_update_commit(struct sugov_policy *sg_policy, u64 time,
 			return;
 
 		policy->cur = next_freq;
-		trace_cpu_frequency(next_freq, smp_processor_id());
 	} else {
 		sg_policy->work_in_progress = true;
 		sched_irq_work_queue(&sg_policy->irq_work);
@@ -195,7 +193,6 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
 				policy->cpuinfo.max_freq : policy->cur;
 
 	freq = (freq + (freq >> 2)) * util / max;
-	trace_sugov_next_freq(policy->cpu, util, max, freq);
 
 	if (freq == sg_policy->cached_raw_freq && sg_policy->next_freq != UINT_MAX)
 		return sg_policy->next_freq;
@@ -388,10 +385,6 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
 		sg_cpu->flags = flags;
 		sugov_calc_avg_cap(sg_policy, sg_cpu->walt_load.ws,
 				   sg_policy->policy->cur);
-		trace_sugov_util_update(sg_cpu->cpu, sg_cpu->util,
-					sg_policy->avg_cap,
-					max, sg_cpu->walt_load.nl,
-					sg_cpu->walt_load.pl, flags);
 		sugov_iowait_boost(sg_cpu, &util, &max);
 		sugov_walt_adjust(sg_cpu, &util, &max);
 		next_f = get_next_freq(sg_policy, util, max);
@@ -482,10 +475,6 @@ static void sugov_update_shared(struct update_util_data *hook, u64 time,
 
 	sugov_calc_avg_cap(sg_policy, sg_cpu->walt_load.ws,
 			   sg_policy->policy->cur);
-
-	trace_sugov_util_update(sg_cpu->cpu, sg_cpu->util, sg_policy->avg_cap,
-				max, sg_cpu->walt_load.nl,
-				sg_cpu->walt_load.pl, flags);
 
 	if (sugov_should_update_freq(sg_policy, time)) {
 		if (flags & SCHED_CPUFREQ_RT_DL)
