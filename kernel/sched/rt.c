@@ -12,6 +12,7 @@
 #include <trace/events/sched.h>
 
 #include "walt.h"
+#include "features.h"
 
 int sched_rr_timeslice = RR_TIMESLICE;
 int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
