@@ -744,6 +744,8 @@ noinline int slow_avc_audit(u32 ssid, u32 tsid, u16 tclass,
 
 	if (!denied)
 		return 0;
+	if (!denied)
+		return 0;
 
 	if (!a) {
 		a = &stack_data;
