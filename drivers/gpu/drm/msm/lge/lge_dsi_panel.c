@@ -766,13 +766,9 @@ static int lge_dsi_panel_pin_seq(struct lge_panel_pin_seq *seq)
 			if (rc) {
 				pr_err("unable to set dir for gpio %d, rc=%d\n", seq->gpio, rc);
 				break;
-			} else {
-				pr_info("gpio %d -> %d\n", seq->gpio, 1);
 			}
-		} else {
+		} else
 			gpio_set_value(seq->gpio, 0);
-			pr_info("gpio %d -> %d\n", seq->gpio, 0);
-		}
 		usleep_range(seq->sleep_ms*1000, seq->sleep_ms*1000);
 		seq++;
 	}
