@@ -535,15 +535,11 @@ static int bg_sync(void)
 
 	suspend_sync_wq_init();
 
-	if (work_busy(&work_sync)) {
-		printk(KERN_DEBUG "[bg_sync] work_sync already run\n");
+	if (work_busy(&work_sync))
 		return -EBUSY;
-	}
 
-	printk(KERN_DEBUG "[bg_sync] queue start\n");
 	suspend_sync_done = 0;
 	ret = queue_work(suspend_sync_wq, &work_sync);
-	printk(KERN_DEBUG "[bg_sync] queue end, ret = %s\n", ret?"true":"false");
 
 	while (timeout_in_ms--) {
 		if (suspend_sync_done)
@@ -551,19 +547,15 @@ static int bg_sync(void)
 		msleep(10);
 	}
 
-	if (suspend_sync_done) {
-		printk(KERN_INFO "[bg_sync] (%d * 10ms) ...\n", BG_SYNC_TIMEOUT - timeout_in_ms);
+	if (suspend_sync_done)
 		return 0;
-	}
 
 	return -EBUSY;
 }
 
 static void work_sync_fn(struct work_struct *work)
 {
-	printk(KERN_DEBUG "[bg_sync] sys_sync start\n");
 	sys_sync();
-	printk(KERN_DEBUG "[bg_sync] sys_sync done\n");
 	suspend_sync_done = 1;
 }
 #endif
