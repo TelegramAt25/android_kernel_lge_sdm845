@@ -1,5 +1,5 @@
 #define pr_fmt(fmt) "UNINODE: %s: " fmt, __func__
-#define pr_uninode(fmt, ...) pr_err(fmt, ##__VA_ARGS__)
+#define pr_uninode(fmt, ...) pr_debug(fmt, ##__VA_ARGS__)
 
 #define UNIFIED_NODES_DEVICE	"lge-unified-nodes"
 #define UNIFIED_NODES_DISABLED	-1000000
