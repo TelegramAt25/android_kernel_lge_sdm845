@@ -111,7 +111,7 @@ enum TOUCH_DEBUG {
 
 
 #define TOUCH_I(fmt, args...)					\
-	pr_info("[Touch_M] "					\
+	pr_debug("[Touch_M] "					\
 			fmt, ##args)
 
 #define TOUCH_E(fmt, args...)					\
@@ -121,11 +121,10 @@ enum TOUCH_DEBUG {
 extern u32 touch_debug_mask;
 #define TOUCH_D(condition, fmt, args...)			\
 	do {							\
-		if (unlikely(touch_debug_mask & (condition)))	\
-			pr_info("[Touch_M] " fmt, ##args);	\
+		pr_debug("[Touch_M] " fmt, ##args);		\
 	} while (0)
 
-#define TOUCH_DEBUG_SHOW_FILE
+//#define TOUCH_DEBUG_SHOW_FILE
 #ifdef TOUCH_DEBUG_SHOW_FILE
 #define __SHORT_FILE__ (strrchr(__FILE__, '/') + 1)
 #define TOUCH_TRACE()	TOUCH_D(TRACE, "- %s(%s) %d\n",		\
