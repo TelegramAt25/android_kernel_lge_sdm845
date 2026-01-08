@@ -9,7 +9,7 @@
  */
 
 #define pr_fmt(fmt) "VENEER: %s: " fmt, __func__
-#define pr_veneer(fmt, ...) pr_err(fmt, ##__VA_ARGS__)
+#define pr_veneer(fmt, ...) pr_debug(fmt, ##__VA_ARGS__)
 
 #include <linux/of.h>
 #include <linux/slab.h>
