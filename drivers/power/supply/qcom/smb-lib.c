@@ -5644,16 +5644,19 @@ int smblib_deinit(struct smb_charger *chg)
  ************************/
 irqreturn_t override_handle_chg_state_change(int irq, void *data)
 {
+#ifdef DEBUG
 	const char str_charger_status[8][12] = {
 		"inhibit", "trickle", "precharge", "fullon",
 		"taper", "termination", "chg pause", "invalid"
 	};
+#endif
 
 	struct smb_irq_data* irq_data = data;
 	struct smb_charger*  chg = irq_data->parent_data;
 	u8 stat;
 
 	if (smblib_read(chg, BATTERY_CHARGER_STATUS_1_REG, &stat) >= 0) {
+#ifdef DEBUG
 		smblib_dbg(chg, PR_REGISTER, "0x%04x:0x%02x - "
 			"BVR_INITIAL_RAMP(%d), "
 			"CC_SOFT_TERMINATE(%d), "
@@ -5664,10 +5667,13 @@ irqreturn_t override_handle_chg_state_change(int irq, void *data)
 			!!(stat & CC_SOFT_TERMINATE_BIT),
 			(int)((stat & STEP_CHARGING_STATUS_MASK) >> STEP_CHARGING_STATUS_SHIFT),
 			(int)(stat & BATTERY_CHARGER_STATUS_MASK));
+#endif
 
 		stat &= BATTERY_CHARGER_STATUS_MASK;
+#ifdef DEBUG
 		smblib_dbg(chg, PR_INTERRUPT, "chg_state_change to 0x%X, %s\n",
 			stat, str_charger_status[stat&0x7]);
+#endif
 
 		if (stat == TERMINATE_CHARGE) {
 			if (smblib_masked_write(chg, WD_CFG_REG,
@@ -5708,12 +5714,14 @@ irqreturn_t override_handle_usb_typec_change(int irq, void* arg) {
 		vote(chg->pd_disallowed_votable_indirect, HVDCP_TIMEOUT_VOTER,
 			false, 0);
 	workaround_charging_with_rd_func(chg);
+#ifdef DEBUG
 	if (chg->typec_mode == POWER_SUPPLY_TYPEC_SINK) {
 		union power_supply_propval val = { 0, };
 		int   usb_vnow = smblib_get_prop_usb_voltage_now(chg, &val)
 			? val.intval/1000 : -1;
 		smblib_dbg(chg, PR_OTG, "Vbus is %d mV on sink.\n", usb_vnow);
 	}
+#endif
 
 	return ret;
 }
@@ -5813,16 +5821,21 @@ irqreturn_t override_handle_icl_change(int irq, void *data) {
 }
 
 irqreturn_t override_handle_dc_debug(int irq, void* data) {
+#ifdef DEBUG
 	union power_supply_propval buf = {0, };
-	struct smb_irq_data*	   arg = data;
 	struct smb_charger*	   chg = arg->parent_data;
+#endif
+	struct smb_irq_data*	   arg = data;
 
 	const char* irqname = arg->name;
+
+#ifdef DEBUG
 	int present = !smblib_get_prop_dc_present(chg, &buf) ? buf.intval : -1;
 	int online = !smblib_get_prop_dc_online(chg, &buf) ? buf.intval : -1;
 	int aicl = !smblib_get_prop_input_current_settled(chg, &buf) ? buf.intval/1000 : -1;
 	smblib_dbg(chg, PR_INTERRUPT, "IRQ: %s (present=%d, online=%d, aicl=%dmA)\n",
 		irqname, present, online, aicl);
+#endif
 
 	if (!strcmp(irqname, "dcin-plugin"))
 		return smblib_handle_dc_plugin(irq, data);
