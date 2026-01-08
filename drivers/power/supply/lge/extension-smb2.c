@@ -97,6 +97,7 @@ static void debug_dump(struct smb_charger* charger, const char* title, u16 start
 }
 
 static void debug_polling(struct smb_charger* charger) {
+#ifdef DEBUG
 	union power_supply_propval	val = {0, };
 	u8				reg = 0;
 
@@ -289,11 +290,12 @@ out:	pr_info("PMINFO: ---------------------------------------------"
 			unified_bootmode_marker());
 
 	vote(charger->awake_votable, POLLING_LOGGER_VOTER, false, 0);
+#endif
 	return;
 }
 
 static void debug_battery(struct smb_charger* charger, int func) {
-
+#ifdef DEBUG
 	static const struct base {
 		#define PMI_REG_BASE_CHGR	0x1000
 		#define PMI_REG_BASE_OTG	0x1100
@@ -331,6 +333,7 @@ static void debug_battery(struct smb_charger* charger, int func) {
 		debug_dump(charger, bases[func].name, bases[func].base);
 	else
 		; /* Do nothing */
+#endif
 }
 
 static int restricted_charging_iusb(struct smb_charger* charger, int mvalue) {
