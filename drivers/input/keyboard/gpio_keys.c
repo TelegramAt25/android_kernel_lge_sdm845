@@ -276,7 +276,7 @@ static ssize_t cover_recovery_req_store(struct device *dev, struct device_attrib
 	ssize_t ret = strnlen(buf, PAGE_SIZE);
 
 	sscanf(buf, "%d", &delay);
-	pr_err("%s : %d\n", __func__, delay);
+	pr_debug("%s : %d\n", __func__, delay);
 
 	send_recovery_event(1);
 	cover_recovery.state = 0;       //FIXME : This value is set if power on control receivced from framework in DS1.
@@ -502,14 +502,14 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 	} else {
 #if defined(CONFIG_LGE_DUAL_SCREEN)
 		if (is_ds_connected() && ((button->code == 115) || (button->code == 377)) ) {
-			pr_err("gpio_keys_report_event: skip report event! is_ds_connected(%d), code(%d), value(%d)\n", is_ds_connected(), button->code, state);
+			pr_debug("gpio_keys_report_event: skip report event! is_ds_connected(%d), code(%d), value(%d)\n", is_ds_connected(), button->code, state);
 		} else {
 			input_event(input, type, button->code, state);
-			pr_err("gpio_keys_report_event: code(%d), value(%d)\n",button->code, state);
+			pr_debug("gpio_keys_report_event: code(%d), value(%d)\n",button->code, state);
 		}
 #else
 		input_event(input, type, button->code, state);
-		pr_err("gpio_keys_report_event: code(%d), value(%d)\n",button->code, state);
+		pr_debug("gpio_keys_report_event: code(%d), value(%d)\n",button->code, state);
 #endif
 #ifdef CONFIG_LGE_HANDLE_PANIC
 		lge_gen_key_panic(button->code, state);
@@ -525,7 +525,7 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 			if (sdev.state_front != state) {
 				sdev.state_front = state;
 				hallic_set_state(&sdev, state);
-				pr_err("[Display] smart_cover state switched to %s \n", (state ? "CLOSE" : "OPEN"));
+				pr_debug("[Display] smart_cover state switched to %s \n", (state ? "CLOSE" : "OPEN"));
 			}
 		}
 #if defined(CONFIG_LGE_DUAL_SCREEN)
@@ -535,7 +535,7 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 					sdev.state_front = state;
 					if (is_ds_connected() || lge_get_factory_boot()) {
 						hallic_set_state(&sdev, state);
-						pr_err("[Display][hallIC] %s: ds3_smart_cover state switched to %s \n", __func__, (state ? "CLOSE" : "OPEN"));
+						pr_debug("[Display][hallIC] %s: ds3_smart_cover state switched to %s \n", __func__, (state ? "CLOSE" : "OPEN"));
 					}
 				}
 			}
@@ -544,9 +544,9 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 		if (!strncmp(bdata->button->desc, "nfc_cover", 9)){
 			if (ndev.state != !!state) {
 				hallic_set_state(&ndev, state);
-				pr_err("[Display] nfc_cover state switched to %s \n", (state ? "CLOSE" : "OPEN"));
+				pr_debug("[Display] nfc_cover state switched to %s \n", (state ? "CLOSE" : "OPEN"));
 			} else {
-				pr_err("%s: discard wrong nfc_cover irq %s \n", __func__, (state ? "CLOSE" : "OPEN"));
+				pr_debug("%s: discard wrong nfc_cover irq %s \n", __func__, (state ? "CLOSE" : "OPEN"));
 				return;
 			}
 		}
@@ -562,7 +562,7 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 				sdev.state_back = state;
 				if (is_ds_connected() || lge_get_factory_boot()) {
 					hallic_set_state(&sdev, state);
-					pr_err("[Display][hallIC] %s: ds3_cover_display_back state switched to %s \n", __func__, (state ? "CLOSE" : "OPEN"));
+					pr_debug("[Display][hallIC] %s: ds3_cover_display_back state switched to %s \n", __func__, (state ? "CLOSE" : "OPEN"));
 				}
 			}
 		}
@@ -761,10 +761,10 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 				if (hallic_register(&sdev) < 0) {
 					pr_err("ds3_smart_cover switch registration failed\n");
 				}
-				pr_err("ds3_smart_cover_dev switch registration success\n");
+				pr_debug("ds3_smart_cover_dev switch registration success\n");
 			}
 			if (!strncmp(bdata->button->desc, "ds3_cover_display_back", 22))
-				pr_err("ds3_cover_display_back register");
+				pr_debug("ds3_cover_display_back register");
 
 			if (!strncmp(bdata->button->desc, "smart_cover", 11) &&
 			    1 /* lge_get_dual_display_support() */)
@@ -775,14 +775,14 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 				if (hallic_register(&sdev) < 0) {
 					pr_err("smart_cover switch registration failed\n");
 				}
-				pr_err("smart_cover_dev switch registration success\n");
+				pr_debug("smart_cover_dev switch registration success\n");
 			}
 		}
 
 		if (bdata->button->desc != NULL) {
 			if (!strncmp(bdata->button->desc, "nfc_cover", 9)) {
 				hallic_register(&ndev);
-				pr_err("hallic_dev switch registration success\n");
+				pr_debug("hallic_dev switch registration success\n");
 			}
 		}
 #endif
@@ -794,7 +794,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 			if (hallic_register(&luke_sdev) < 0) {
 				pr_err("ds3 luke_dev switch registration failed\n");
 			}
-			pr_err("ds3 luke_dev switch registration success\n");
+			pr_debug("ds3 luke_dev switch registration success\n");
 		}
 #endif
 		if (button->irq) {
@@ -1101,7 +1101,7 @@ static int gpio_keys_probe(struct platform_device *pdev)
 			return error;
 		}
 		else
-			pr_err("cover_fw_dev switch registration success\n");
+			pr_debug("cover_fw_dev switch registration success\n");
 	}
 	if (!cover_recovery.dev) {
 		error = hallic_register(&cover_recovery);
