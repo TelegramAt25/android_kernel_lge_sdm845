@@ -601,8 +601,8 @@ static void lge_display_control_store_sw43408a(struct dsi_panel *panel, bool sen
 	dispctrl2_payload[2] &= 0xFB;
 	dispctrl2_payload[2] |= panel->lge.dgc_status << 2;
 
-	pr_info("ctrl-command-1: 0x%02x 0x%02x", dispctrl1_payload[1], dispctrl1_payload[2]);
-	pr_info("ctrl-command-2: 0x%02x 0x%02x 0x%02x\n", dispctrl2_payload[1], dispctrl2_payload[2], dispctrl2_payload[3]);
+	//pr_info("ctrl-command-1: 0x%02x 0x%02x", dispctrl1_payload[1], dispctrl1_payload[2]);
+	//pr_info("ctrl-command-2: 0x%02x 0x%02x 0x%02x\n", dispctrl2_payload[1], dispctrl2_payload[2], dispctrl2_payload[3]);
 
 	if (send_cmd) {
 		lge_ddic_dsi_panel_tx_cmd_set(panel, LGE_DDIC_DSI_DISP_CTRL_COMMAND_1);
@@ -963,7 +963,7 @@ static void lge_set_brightness_dim_sw43408a(struct dsi_panel *panel, int input)
 static void lge_update_ddic_hdr_status(struct dsi_panel *panel)
 {
 	panel->lge.ddic_hdr = !!(panel->lge.ve_hdr | panel->lge.ace_hdr);
-	pr_info("hdr %d ve_hdr %d ace_hdr %d \n", panel->lge.ddic_hdr, panel->lge.ve_hdr, panel->lge.ace_hdr);
+	//pr_info("hdr %d ve_hdr %d ace_hdr %d \n", panel->lge.ddic_hdr, panel->lge.ve_hdr, panel->lge.ace_hdr);
 }
 
 static void lge_set_video_enhancement_sw43408a(struct dsi_panel *panel, int input)
@@ -1133,7 +1133,7 @@ static void lge_update_irc_state(struct dsi_panel *panel, int pos, int value)
 	else
 		*cur_state &= ~BIT(pos);
 
-	pr_info("success (%d), (%d)\n", *cur_state, panel->lge.irc_current_state);
+	//pr_info("success (%d), (%d)\n", *cur_state, panel->lge.irc_current_state);
 
 	return;
 }
@@ -1145,19 +1145,19 @@ int lge_set_irc_state_sw43408a(struct dsi_panel *panel, enum lge_irc_mode mode, 
 	int prev_state = !!panel->lge.irc_current_state;
 	int new_state;
 
-	pr_info("irc request=%s\n", ((enable == LGE_IRC_OFF) ? "off" : "on"));
+	//pr_info("irc request=%s\n", ((enable == LGE_IRC_OFF) ? "off" : "on"));
 
 	mutex_lock(&panel->panel_lock);
 	lge_update_irc_state(panel, mode, enable);
 	new_state = !!panel->lge.irc_current_state;
 
 	if(!panel->lge.use_irc_ctrl) {
-		pr_info("go to ace set\n");
+		//pr_info("go to ace set\n");
 		goto ace_set;
 	}
 
 	if (prev_state == new_state) {
-		pr_info("same state, skip=(%d,%d)\n", prev_state, new_state);
+		//pr_info("same state, skip=(%d,%d)\n", prev_state, new_state);
 		goto ace_set;
 	}
 
