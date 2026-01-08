@@ -79,9 +79,6 @@ static int bm_debug_mask = PR_INFO|PR_ERR;
 
 #define pr_bm(reason, fmt, ...)                 \
 	do {                                        \
-		if ( bm_debug_mask & (reason) )         \
-		pr_info("[bm] " fmt, ##__VA_ARGS__);    \
-		else                                    \
 		pr_debug("[bm] " fmt, ##__VA_ARGS__);   \
 	} while (0)
 
