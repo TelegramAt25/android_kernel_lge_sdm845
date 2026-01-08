@@ -475,8 +475,10 @@ static __ref int watchdog_kthread(void *arg)
 		 * Could have been changed on other cpu
 		 */
 		mod_timer(&wdog_dd->pet_timer, jiffies + delay_time);
+#ifdef DEBUG
 #ifdef CONFIG_LGE_HANDLE_PANIC
 		pr_info("pet_watchdog [enable : %d, jiffies : %lu, delay_time : %lu]\n", enable, jiffies, delay_time);
+#endif
 #endif
 	}
 	return 0;
