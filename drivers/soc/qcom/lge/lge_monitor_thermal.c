@@ -185,9 +185,12 @@ static DEVICE_ATTR(disable, S_IWUSR | S_IRUSR, lge_monitor_disable_get,
 #define NUMS_CDEV 10
 static void _poll_monitor(struct lge_monitor_thermal_data *monitor_dd)
 {
+#ifdef DEBUG
 	struct thermal_cooling_device *cdev = NULL;
 	struct sched_cluster *cluster;
 	unsigned long state;
+#endif
+
 	int ret;
 	union power_supply_propval prop = {0, };
 
@@ -248,6 +251,7 @@ static void _poll_monitor(struct lge_monitor_thermal_data *monitor_dd)
 	} else
 		monitor_dd->last_batt_soc = prop.intval;
 
+#ifdef DEBUG
 	pr_info("[TM][I] XO:%3d, PA0:%3d, PA1:%3d, QUIET:%3d VTS:%3d\n",
 			monitor_dd->last_xo_temp/1000,
 			monitor_dd->last_pa0_temp/1000,
@@ -286,6 +290,7 @@ static void _poll_monitor(struct lge_monitor_thermal_data *monitor_dd)
 				cluster->max_mitigated_freq,
 				cluster->capacity);
 	}
+#endif
 }
 
 static void poll_monitor_work(struct work_struct *work)
