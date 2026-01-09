@@ -172,7 +172,7 @@ struct gf_ioc_chip_info {
 #define  USE_PLATFORM_BUS     1
 //#define USE_SPI_BUS         1
 
-#define GF_DEBUG
+//#define GF_DEBUG
 /*#undef  GF_DEBUG*/
 
 #ifdef  GF_DEBUG
