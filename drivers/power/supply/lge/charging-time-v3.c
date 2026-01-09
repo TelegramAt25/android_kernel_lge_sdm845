@@ -6,10 +6,7 @@
 #define pr_fmt(fmt) "CHGTIME: %s: " fmt, __func__
 #define pr_chgtime(reason, fmt, ...)			\
 do {							\
-	if (pr_debugmask & (reason))			\
-		pr_info(fmt, ##__VA_ARGS__);		\
-	else						\
-		pr_debug(fmt, ##__VA_ARGS__);		\
+	pr_debug(fmt, ##__VA_ARGS__);		\
 } while (0)
 
 #include <linux/of.h>
