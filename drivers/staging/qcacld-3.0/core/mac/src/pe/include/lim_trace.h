@@ -32,7 +32,6 @@
 #include "lim_global.h"
 #include "mac_trace.h"
 #include "qdf_trace.h"
-#ifdef LIM_TRACE_RECORD
 
 #define LIM_TRACE_GET_SSN(data)    (((data) >> 16) & 0xff)
 #define LIM_TRACE_GET_SUBTYPE(data)    (data & 0xff)
@@ -70,6 +69,7 @@ enum {
 	TRACE_CODE_INFO_LOG
 };
 
+#ifdef LIM_TRACE_RECORD
 void lim_trace_init(tpAniSirGlobal pMac);
 void limTraceReset(tpAniSirGlobal pMac);
 void limTraceUpdateMgmtStat(tpAniSirGlobal pMac, uint8_t subtype);

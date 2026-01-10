@@ -22,7 +22,7 @@
 /* macro to remove parens */
 #define ATH_PRINTX_ARG(arg ...) arg
 
-#ifdef WLAN_DEBUG
+#ifdef DEBUG
 /* NOTE: the AR_DEBUG_PRINTF macro is defined here to handle special handling of variable arg macros
  * which may be compiler dependent. */
 #define AR_DEBUG_PRINTF(mask, args) do {	\
