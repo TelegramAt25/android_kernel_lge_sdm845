@@ -436,7 +436,7 @@ config LGE_SLUB_SIMPLE_DEBUG
 config LGE_SLUB_FREEPOINTER_DEBUG
         bool "Support SLUB freepointer debug"
 		depends on LGE_SLUB_SIMPLE_DEBUG
-		default y
+		default n
 		help
 		  Say 'y' here to include SLUB freepointer debug feature.
 config LGE_SLUB_UAF_DEBUG
