@@ -663,6 +663,7 @@ static void send_flush_completion_to_user(uint8_t ring_id)
 }
 #endif
 
+#ifdef DEBUG
 /**
  * wlan_logging_thread() - The WLAN Logger thread
  * @Arg - pointer to the HDD context
@@ -760,6 +761,7 @@ static int wlan_logging_thread(void *Arg)
 
 	return 0;
 }
+#endif
 
 void wlan_logging_set_active(bool active)
 {
@@ -841,6 +843,7 @@ int wlan_logging_sock_init_svc(void)
 	clear_bit(HOST_LOG_PER_PKT_STATS, &gwlan_logging.eventFlag);
 	clear_bit(HOST_LOG_FW_FLUSH_COMPLETE, &gwlan_logging.eventFlag);
 	init_completion(&gwlan_logging.shutdown_comp);
+#ifdef DEBUG
 	gwlan_logging.thread = kthread_create(wlan_logging_thread, NULL,
 					      "wlan_logging_thread");
 	if (IS_ERR(gwlan_logging.thread)) {
@@ -849,6 +852,7 @@ int wlan_logging_sock_init_svc(void)
 		goto err3;
 	}
 	wake_up_process(gwlan_logging.thread);
+#endif
 	gwlan_logging.is_active = true;
 	gwlan_logging.is_flush_complete = false;
 
