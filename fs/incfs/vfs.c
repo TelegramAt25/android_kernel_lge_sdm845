@@ -1732,7 +1732,8 @@ static int dir_unlink(struct inode *dir, struct dentry *dentry)
 		goto out;
 	}
 
-	err = vfs_getattr(&backing_path, &stat);
+	err = vfs_getattr(&backing_path, &stat, STATX_NLINK,
+			  AT_STATX_SYNC_AS_STAT);
 	if (err)
 		goto out;
 
@@ -2076,7 +2077,7 @@ static int incfs_setattr(struct dentry *dentry, struct iattr *ia)
 	}
 
 	inode_lock(d_inode(backing_dentry));
-	error = notify_change(backing_dentry, ia, NULL);
+	error = notify_change(backing_dentry, ia);
 	inode_unlock(d_inode(backing_dentry));
 
 	if (error)
@@ -2272,7 +2273,7 @@ struct dentry *incfs_mount_fs(struct file_system_type *type, int flags,
 		goto err_put_path;
 
 	path_put(&backing_dir_path);
-	sb->s_flags |= MS_ACTIVE;
+	sb->s_flags |= SB_ACTIVE;
 
 	pr_debug("incfs: mount\n");
 	return dget(sb->s_root);
