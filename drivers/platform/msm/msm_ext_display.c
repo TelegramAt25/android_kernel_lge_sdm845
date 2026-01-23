@@ -11,7 +11,6 @@
  */
 
 #define pr_fmt(fmt)	"%s: " fmt, __func__
-#define DEBUG
 
 #include <linux/slab.h>
 #include <linux/bitops.h>
