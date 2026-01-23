@@ -33,17 +33,11 @@
 
 #define pr_idt(reason, fmt, ...)				\
 do {								\
-	if (idtp9222_debug & (reason))				\
-		pr_err(fmt, ##__VA_ARGS__);			\
-	else							\
-		pr_debug(fmt, ##__VA_ARGS__);			\
+	pr_debug(fmt, ##__VA_ARGS__);			\
 } while (0)
 
 #define pr_assert(exp)						\
 do {								\
-	if ((idtp9222_debug & IDT_ASSERT) && !(exp)) {		\
-		pr_idt(IDT_ASSERT, "Assertion failed\n");	\
-	}							\
 } while (0)
 
 #include <linux/i2c.h>
