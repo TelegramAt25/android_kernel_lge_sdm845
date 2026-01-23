@@ -127,7 +127,6 @@ struct idtp9222_struct {
 	struct delayed_work 	timer_setoff;
 	struct delayed_work	timer_overheat;
 	struct delayed_work	polling_temp;
-	struct delayed_work 	logger_gpios;
 	/* shadow status */
 	bool			status_onpad;		// opposite to gpio_detached
 	bool			status_dcin;		// presence of DCIN on PMIC side
@@ -897,30 +896,6 @@ static void idtp9222_polling_temp(struct work_struct* work) {
 		(msecs_to_jiffies(POLLING_TEMP_MS)));
 }
 
-static void idtp9222_logger_gpios(struct work_struct* work) {
-	struct idtp9222_struct* idtp9222 = container_of(work, struct idtp9222_struct,
-		logger_gpios.work);
-
-	// Monitor 3 GPIOs
-	int idtfault = gpio_get_value(idtp9222->gpio_idtfault);
-	int detached = gpio_get_value(idtp9222->gpio_detached);
-	int disabled = get_effective_result_locked(idtp9222->wlc_disable);
-	pr_err(	"MSM_GPIO%d(<-OD2_N, idtfault):%d, "
-		"MSM_GPIO%d(<-PDT_N, detached):%d, "
-		"PMI_GPIO%d(->OFF_P, disabled):%d\n",
-		idtp9222->gpio_idtfault, idtfault,
-		idtp9222->gpio_detached, detached,
-		idtp9222->gpio_disabled, disabled);
-
-	if (false) {
-		/* for debugging */
-		idtp9222_reg_dump(idtp9222);
-	}
-
-	schedule_delayed_work(&idtp9222->logger_gpios, round_jiffies_relative
-		(msecs_to_jiffies(1000*30)));
-}
-
 static int idtp9222_disable_callback(struct votable *votable, void *data,
 	int disabled, const char *client) {
 	struct idtp9222_struct* idtp9222 = data;
@@ -1174,7 +1149,6 @@ static int idtp9222_remove(struct i2c_client* client) {
 		cancel_delayed_work_sync(&idtp9222->timer_setoff);
 		cancel_delayed_work_sync(&idtp9222->timer_overheat);
 		cancel_delayed_work_sync(&idtp9222->polling_temp);
-		cancel_delayed_work_sync(&idtp9222->logger_gpios);
 		destroy_votable(idtp9222->wlc_disable);
 
 		if (idtp9222->wlc_psy)
@@ -1253,8 +1227,6 @@ static int idtp9222_probe(struct i2c_client* client, const struct i2c_device_id*
 	INIT_DELAYED_WORK(&idtp9222->timer_setoff, idtp9222_timer_setoff);
 	INIT_DELAYED_WORK(&idtp9222->timer_overheat, idtp9222_timer_overheat);
 	INIT_DELAYED_WORK(&idtp9222->polling_temp, idtp9222_polling_temp);
-	INIT_DELAYED_WORK(&idtp9222->logger_gpios, idtp9222_logger_gpios);
-	schedule_delayed_work(&idtp9222->logger_gpios, 0);
 
 	pr_idt(IDT_VERBOSE, "Complete probing IDTP9222\n");
 	return 0;
