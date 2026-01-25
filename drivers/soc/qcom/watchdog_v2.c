@@ -600,6 +600,8 @@ static void configure_bark_dump(struct msm_watchdog_data *wdog_dd)
 	int cpu;
 	void *cpu_buf;
 
+	return;
+
 	if (!IS_ENABLED(CONFIG_QCOM_MEMORY_DUMP_V2))
 		return;
 
