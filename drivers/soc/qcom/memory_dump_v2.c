@@ -171,6 +171,7 @@ EXPORT_SYMBOL(get_msm_dump_ptr);
 
 static int __init init_memory_dump(void)
 {
+	return -ENODEV;
 	struct msm_dump_table *table;
 	struct msm_dump_entry entry;
 	struct device_node *np;
