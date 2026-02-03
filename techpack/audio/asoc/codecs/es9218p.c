@@ -1620,7 +1620,7 @@ static ssize_t set_forced_sample_rate(struct device *dev,
     if (input_sample_rate == 0) {
         g_rate_lck = false;
         pr_notice("%s() : sample rate lock unset, g_rate_lck = %d \n", __func__, g_rate_lck);
-    } else if (input_sample_rate < 44100 || input_sample_rate > 384000 || input_sample_rate % 100 != 0) {
+    } else if (input_sample_rate < 32000 || input_sample_rate > 384000 || input_sample_rate % 100 != 0) {
         return -EINVAL;
     } else {
         g_rate_lck = true;
